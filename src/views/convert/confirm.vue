@@ -298,11 +298,11 @@ export default defineComponent({
       const {
         walletAddr,
         jettonAddr,
-        orderInfo: { publicKey, amount, remark },
+        orderInfo: { publicKey, amount },
       } = this;
 
       const body = beginCell()
-        .storeUint(0xf8a7ea5, 32) // jetton 转账操作码
+        .storeUint(0x0f8a7ea5, 32) // jetton 转账操作码
         .storeUint(0, 64) // query_id:uint64
         .storeCoins(new bigNumber(amount).multipliedBy(100).toNumber()) // amount:(VarUInteger 16) -  转账的 Jetton 金额（小数位 = 6 - jUSDT, 9 - 默认）
         .storeAddress(Address.parse(publicKey)) // destination:MsgAddress
@@ -310,8 +310,6 @@ export default defineComponent({
         .storeUint(0, 1) // custom_payload:(Maybe ^Cell)
         .storeCoins(toNano(0.05)) // forward_ton_amount:(VarUInteger 16)
         .storeUint(0, 1) // forward_payload:(Either Cell ^Cell)
-        .storeUint(0, 32) // 写入32个零位以表示后面将跟随文本评论
-        .storeStringTail(remark) // 写下我们的文本评论
         .endCell();
 
       // 创建交易体

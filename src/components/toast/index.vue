@@ -116,7 +116,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useGameStore } from "@/store/game";
+
 import { unitConversion } from "@/utils";
 
 interface ToastMessage {
@@ -139,13 +139,6 @@ export default defineComponent({
       toasts: [] as Array<ToastMessage>,
       toastId: 0,
     };
-  },
-  computed: {
-    // 当前房间
-    gameLevel() {
-      const { gameLevel } = useGameStore();
-      return gameLevel;
-    },
   },
   methods: {
     showToast(event: ToastMessage) {
