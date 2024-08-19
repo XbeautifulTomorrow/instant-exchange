@@ -6,7 +6,7 @@ const serverUrl = "/flash-exchange-server-web";
  * 获取对应币种U价格
  * @param params
  */
-const getCoinExchange = (params: any) => http.get(serverUrl + "/transfer/exchange", params);
+const getCoinExchange = (params: any) => http.get(serverUrl + "/transfer/exchange", params, { showLoading: false });
 
 /**
  * Swap

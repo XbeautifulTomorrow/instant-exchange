@@ -7,6 +7,7 @@ export interface orderInterface {
   amount: number, //数量
   coinName: string, //源币种
   remark: string //备注
+  cell: string
 }
 
 export const useMessageStore = defineStore("message", {

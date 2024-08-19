@@ -453,6 +453,7 @@ export default defineComponent({
         sendCoin: coinName,
         sendAmount: fromAmount,
         receiveCoin: coinName == "GMT" ? "TON" : "GMT",
+        formAddress: this.walletAddr,
       });
       if (res.code == 200) {
         const { setoOrderInfo, setShowConfirm } = useMessageStore();

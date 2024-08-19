@@ -115,7 +115,7 @@
           Your transaction has been sent to the network and will be processed
           within a few minutes.
         </div>
-        <div class="confirm_btn" @click="handleReady()">OK</div>
+        <div class="confirm_btn" @click="handleSuccess()">OK</div>
       </div>
     </v-dialog>
   </div>
@@ -127,7 +127,7 @@ import { accurateDecimal } from "@/utils";
 import bigNumber from "bignumber.js";
 import { useUserStore } from "@/store/user.js";
 import { useMessageStore } from "@/store/message.js";
-import { toNano, beginCell, Address } from "@ton/ton";
+import { toNano, beginCell } from "@ton/ton";
 
 type coin = "GMT" | "TON";
 
@@ -265,6 +265,9 @@ export default defineComponent({
     handleReady() {
       this.showConfirm = false;
     },
+    handleSuccess() {
+      this.showConfirm = false;
+    },
     initTonweb() {},
     getExchangePrice() {
       const { fetchCoinExchange } = useUserStore();
@@ -295,31 +298,37 @@ export default defineComponent({
     },
 
     async handleTransferGMT() {
+      // const {
+      //   walletAddr,
+      //   jettonAddr,
+      //   orderInfo: { publicKey, amount, remark },
+      // } = this;
+
       const {
-        walletAddr,
         jettonAddr,
-        orderInfo: { publicKey, amount },
+        orderInfo: { cell },
       } = this;
 
-      const body = beginCell()
-        .storeUint(0x0f8a7ea5, 32) // jetton 转账操作码
-        .storeUint(0, 64) // query_id:uint64
-        .storeCoins(new bigNumber(amount).multipliedBy(100).toNumber()) // amount:(VarUInteger 16) -  转账的 Jetton 金额（小数位 = 6 - jUSDT, 9 - 默认）
-        .storeAddress(Address.parse(publicKey)) // destination:MsgAddress
-        .storeAddress(Address.parse(walletAddr)) // response_destination:MsgAddress
-        .storeUint(0, 1) // custom_payload:(Maybe ^Cell)
-        .storeCoins(toNano(0.05)) // forward_ton_amount:(VarUInteger 16)
-        .storeUint(0, 1) // forward_payload:(Either Cell ^Cell)
-        .endCell();
+      // const body = beginCell()
+      //   .storeUint(260734629, 32) // jetton 转账操作码
+      //   .storeUint(0, 64) // query_id:uint64
+      //   .storeCoins(new bigNumber(amount).multipliedBy(100).toNumber()) // amount:(VarUInteger 16) -  转账的 Jetton 金额（小数位 = 6 - jUSDT, 9 - 默认）
+      //   .storeAddress(Address.parse(publicKey)) // destination:MsgAddress
+      //   .storeAddress(Address.parse(walletAddr)) // response_destination:MsgAddress
+      //   .storeUint(0, 1) // custom_payload:(Maybe ^Cell)
+      //   .storeCoins(toNano(0.05)) // forward_ton_amount:(VarUInteger 16)
+      //   .storeStringTail(remark) // forward_payload:(Either Cell ^Cell)
+      //   .endCell()
+      //   .toBoc();
 
       // 创建交易体
       const transaction = {
-        validUntil: Math.floor(Date.now() / 1000) + 360,
+        validUntil: Math.floor(Date.now() / 1000) + 3600,
         messages: [
           {
             address: jettonAddr,
             amount: toNano("0.05").toString(), //以nanotons计的Toncoin
-            payload: body.toBoc().toString("base64"),
+            payload: cell,
           },
         ],
       };

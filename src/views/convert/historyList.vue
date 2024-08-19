@@ -22,6 +22,7 @@
               class="history_item"
               v-for="event in item.order"
               :key="event.flashId"
+              @click="handleShowDetails(event)"
             >
               <div class="history_item_info">
                 <div class="history_item_info_left">
