@@ -43,12 +43,40 @@
         </div>
         <div class="swap_amount">
           <div class="from_val">
-            {{ `-${history.sendAmount || "0"} ${history.sendCoin}` }}
+            <span v-if="history.sendCoin == 'GMT'">
+              {{
+                `-${accurateDecimal(history.sendAmount || 0, 2)} ${
+                  history.sendCoin
+                }`
+              }}
+            </span>
+            <span v-else>
+              {{
+                `-${accurateDecimal(history.sendAmount || 0, 6)} ${
+                  history.sendCoin
+                }`
+              }}
+            </span>
           </div>
           <div class="to_val">
-            {{ `+${history.receiveAmount || "0"} ${history.receiveCoin}` }}
+            <span v-if="history.receiveCoin == 'GMT'">
+              {{
+                `+${accurateDecimal(history.receiveAmount || 0, 2)} ${
+                  history.receiveCoin
+                }`
+              }}
+            </span>
+            <span v-else>
+              {{
+                `+${accurateDecimal(history.receiveAmount || 0, 6)} ${
+                  history.receiveCoin
+                }`
+              }}
+            </span>
           </div>
-          <div class="convert_val">{{ `$${history.exchange}` }}</div>
+          <div class="convert_val">
+            {{ `$${accurateDecimal(history.exchange || 0, 4)}` }}
+          </div>
         </div>
         <div class="other_box">
           <div class="recipient_box">
@@ -63,18 +91,27 @@
           </div>
           <div class="fee_box">
             <div class="title">Service Fee</div>
-            <div class="val">{{ `${history.fee} ${history.receiveCoin}` }}</div>
+            <div class="val">
+              {{
+                `${accurateDecimal(history.fee || 0, 2)} ${history.receiveCoin}`
+              }}
+            </div>
           </div>
-          <div class="convert_box">{{ `$ ${usdFee}` }}</div>
+          <div class="convert_box">
+            {{ `$ ${accurateDecimal(usdFee || 0, 4)}` }}
+          </div>
         </div>
-        <div class="external_link_btn">
+        <div
+          class="external_link_btn"
+          @click="handleOpenLink(history.paymentHash)"
+        >
           <v-img
             :width="24"
             cover
             src="@/assets/images/icon_global.svg"
           ></v-img>
           <span class="btn_text">Transaction</span>
-          <span class="hash">{{ history.paymentHash }}</span>
+          <span class="hash">{{ formatHash(history.paymentHash) }}</span>
         </div>
       </div>
     </v-dialog>
@@ -87,6 +124,7 @@ import { getHistoryDetails } from "@/services/api/swap";
 import { useMessageStore } from "@/store/message.js";
 import { useUserStore } from "@/store/user.js";
 import bigNumber from "bignumber.js";
+import { accurateDecimal, openUrl } from "@/utils";
 
 interface orderInfo {
   id: number; //闪兑订单ID
@@ -153,6 +191,7 @@ export default defineComponent({
     },
   },
   methods: {
+    accurateDecimal: accurateDecimal,
     handleReady() {
       this.showDetails = false;
     },
@@ -171,6 +210,17 @@ export default defineComponent({
       if (!event) return "";
       var reg = /^(\S{18})\S+(\S{6})$/;
       return event.replace(reg, "$1***$2");
+    },
+    /**
+     * @description: 格式化Hash地址
+     */
+    formatHash(event: string) {
+      if (!event) return "";
+      return event.substring(0, 10);
+    },
+    handleOpenLink(event: string) {
+      const url = `https://tonscan.org/tx/by-msg-hash/`;
+      openUrl(url + event);
     },
   },
   watch: {

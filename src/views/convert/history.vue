@@ -31,9 +31,29 @@
           </div>
           <div class="history_item_info_right">
             <div class="receive">
-              {{ `+${item.receiveAmount} ${item.receiveCoin}` }}
+              <span v-if="item.receiveCoin == 'GMT'">
+                {{
+                  `+${accurateDecimal(item.receiveAmount, 2)} ${
+                    item.receiveCoin
+                  }`
+                }}
+              </span>
+              <span v-else>
+                {{
+                  `+${accurateDecimal(item.receiveAmount, 6)} ${
+                    item.receiveCoin
+                  }`
+                }}
+              </span>
             </div>
-            <div class="send">{{ `-${item.sendAmount} ${item.sendCoin}` }}</div>
+            <div class="send">
+              <span v-if="item.sendCoin == 'GMT'">
+                {{ `-${accurateDecimal(item.sendAmount, 2)} ${item.sendCoin}` }}
+              </span>
+              <span v-else>
+                {{ `-${accurateDecimal(item.sendAmount, 6)} ${item.sendCoin}` }}
+              </span>
+            </div>
           </div>
         </div>
         <div class="history_item_time">
@@ -50,7 +70,7 @@ import { defineComponent } from "vue";
 import orderDetails from "./orderDetails.vue";
 import { useMessageStore } from "@/store/message.js";
 import { getHistoryList } from "@/services/api/swap";
-import { timeForStr } from "@/utils";
+import { accurateDecimal, timeForStr } from "@/utils";
 
 interface orderInfo {
   flashId: number; //闪兑订单ID
@@ -86,6 +106,7 @@ export default defineComponent({
   },
   methods: {
     timeForStr: timeForStr,
+    accurateDecimal: accurateDecimal,
     async fetchHistoryList() {
       const res = await getHistoryList({ page: 1, size: 1 });
       if (res.code == 200) {
@@ -102,7 +123,7 @@ export default defineComponent({
      */
     formatAddr(event: string) {
       if (!event) return "";
-      var reg = /^(\S{18})\S+(\S{6})$/;
+      var reg = /^(\S{8})\S+(\S{6})$/;
       return event.replace(reg, "$1***$2");
     },
     // 更多历史

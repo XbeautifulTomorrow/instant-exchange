@@ -46,10 +46,36 @@
                 </div>
                 <div class="history_item_info_right">
                   <div class="receive">
-                    {{ `+${event.receiveAmount} ${event.receiveCoin}` }}
+                    <span v-if="event.receiveCoin == 'GMT'">
+                      {{
+                        `+${accurateDecimal(event.receiveAmount, 2)} ${
+                          event.receiveCoin
+                        }`
+                      }}
+                    </span>
+                    <span v-else>
+                      {{
+                        `+${accurateDecimal(event.receiveAmount, 6)} ${
+                          event.receiveCoin
+                        }`
+                      }}
+                    </span>
                   </div>
                   <div class="send">
-                    {{ `-${event.sendAmount} ${event.sendCoin}` }}
+                    <span v-if="event.sendCoin == 'GMT'">
+                      {{
+                        `-${accurateDecimal(event.sendAmount, 2)} ${
+                          event.sendCoin
+                        }`
+                      }}
+                    </span>
+                    <span v-else>
+                      {{
+                        `-${accurateDecimal(event.sendAmount, 6)} ${
+                          event.sendCoin
+                        }`
+                      }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -70,7 +96,7 @@ import { defineComponent } from "vue";
 import orderDetails from "./orderDetails.vue";
 import { useMessageStore } from "@/store/message.js";
 import { getHistoryList } from "@/services/api/swap";
-import { timeForStr } from "@/utils";
+import { timeForStr, accurateDecimal } from "@/utils";
 import { useUserStore } from "@/store/user";
 
 interface orderInfo {
@@ -156,6 +182,7 @@ export default defineComponent({
   },
   methods: {
     timeForStr: timeForStr,
+    accurateDecimal: accurateDecimal,
     handleReady() {
       this.showHistoryList = false;
     },
@@ -220,7 +247,7 @@ export default defineComponent({
      */
     formatAddr(event: string) {
       if (!event) return "";
-      var reg = /^(\S{18})\S+(\S{6})$/;
+      var reg = /^(\S{8})\S+(\S{6})$/;
       return event.replace(reg, "$1***$2");
     },
   },
