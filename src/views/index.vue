@@ -188,7 +188,7 @@ export default defineComponent({
       fromAmount: null as number | any,
       toAmount: null as number | any,
       fromOrTo: false,
-      slippageNum: 0.003 as number | any,
+      slippageNum: 0.05 as number | any,
     };
   },
   async created() {

@@ -52,7 +52,7 @@ import bigNumber from "bignumber.js";
 export default defineComponent({
   data() {
     return {
-      active: 0,
+      active: 3,
       slippageNum: null as number | any,
     };
   },
@@ -66,7 +66,7 @@ export default defineComponent({
         const { setShowSlippage } = useMessageStore();
 
         if (!val) {
-          this.active = 0;
+          this.active = 3;
           this.slippageNum = null;
         }
 
