@@ -242,7 +242,7 @@ export default defineComponent({
   height: 100vh;
   overflow-y: scroll;
   background-color: #fff;
-  border-radius: 4px 4px 0 0;
+  border-radius: 0;
   padding: 0 8px;
   color: #fff;
   font-size: 20px;
