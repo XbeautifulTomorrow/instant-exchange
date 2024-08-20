@@ -449,17 +449,12 @@ export default defineComponent({
     async submitSwap() {
       const { fromAmount, coinName } = this;
 
-      const params = {
+      const res = await transferSwap({
         sendCoin: coinName,
         sendAmount: fromAmount,
         receiveCoin: coinName == "GMT" ? "TON" : "GMT",
         formAddress: this.walletAddr,
-      };
-
-      console.log("wallet:" + this.walletAddr);
-      console.log("params:" + this.walletAddr);
-
-      const res = await transferSwap(params);
+      });
       if (res.code == 200) {
         const { setoOrderInfo, setShowConfirm } = useMessageStore();
         setoOrderInfo(res.data);
