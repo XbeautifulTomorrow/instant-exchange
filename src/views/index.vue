@@ -109,10 +109,10 @@
         <div class="expected_item_left">Swap Rate</div>
         <div class="expected_item_right" v-if="swapTONRate && swapGMTRate">
           <div v-if="coinName == 'GMT'" class="expected_item_val">
-            {{ `1 GMT ≈ ${swapTONRate} TON` }}
+            {{ `1 GMT ≈ ${Number(swapTONRate).toLocaleString()} TON` }}
           </div>
           <div v-else class="expected_item_val">
-            {{ `1 TON ≈ ${swapGMTRate} GMT` }}
+            {{ `1 TON ≈ ${Number(swapGMTRate).toLocaleString()} GMT` }}
           </div>
           <div class="operating_box" @click="getExchangePrice()">
             <v-img
