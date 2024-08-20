@@ -149,6 +149,7 @@ export default defineComponent({
   .slippage_title {
     color: #000;
     font-size: 24px;
+    font-style: normal;
     font-weight: bold;
     margin-bottom: 8px;
   }
