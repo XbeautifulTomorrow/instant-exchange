@@ -65,6 +65,7 @@ interface orderInfo {
 }
 
 export default defineComponent({
+  name: "history",
   data() {
     return {
       historyList: [] as Array<orderInfo>,

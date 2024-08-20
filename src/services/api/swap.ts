@@ -14,12 +14,18 @@ const getCoinExchange = (params: any) => http.get(serverUrl + "/transfer/exchang
  */
 const transferSwap = (params: any) => http.post(serverUrl + "/transfer/swap", params);
 
+/**
+ * 闪兑详情
+ * @param params
+ */
+const transferPaid = (params: any) => http.get(serverUrl + "/transfer/paid", params);
 
 /**
  * 闪兑分页列表
  * @param params
  */
 const getHistoryList = (params: any) => http.get(serverUrl + "/transfer/swapList", params);
+
 /**
  * 闪兑详情
  * @param params
@@ -37,6 +43,7 @@ const getSlippage = (params: any) => http.get(serverUrl + "/transfer/getSlippage
 export {
   getCoinExchange,
   transferSwap,
+  transferPaid,
   getHistoryList,
   getHistoryDetails,
   getSlippage

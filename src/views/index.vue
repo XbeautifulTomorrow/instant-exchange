@@ -153,9 +153,9 @@
         <div class="expected_item_right" v-else>--</div>
       </div>
     </div>
-    <history></history>
+    <history ref="history"></history>
     <slippage @setSlippage="handleSlippage"></slippage>
-    <confirm :slippageVal="slippageNum"></confirm>
+    <confirm :slippageVal="slippageNum" @success="handleSuccess"></confirm>
     <historyList></historyList>
   </div>
 </template>
@@ -404,25 +404,6 @@ export default defineComponent({
           console.log(error);
         });
     },
-    // 获取jetton地址
-    async fetchJettons() {
-      const { walletAddr } = this;
-
-      let fetchUrl = `https://tonapi.io/v2/jettons/${encodeURIComponent(
-        walletAddr
-      )}/holders`;
-
-      axios
-        .get(fetchUrl)
-        .then((res: any) => {
-          if (res.status == 200) {
-            console.log(res);
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
     handleMax() {
       this.fromOrTo = true;
       this.fromAmount = this.coinBalance;
@@ -460,12 +441,20 @@ export default defineComponent({
         sendAmount: fromAmount,
         receiveCoin: coinName == "GMT" ? "TON" : "GMT",
         formAddress: this.walletAddr,
+        slippage: this.slippageRate,
       });
       if (res.code == 200) {
         const { setoOrderInfo, setShowConfirm } = useMessageStore();
         setoOrderInfo(res.data);
         setShowConfirm(true);
       }
+    },
+    handleSuccess() {
+      this.$nextTick(() => {
+        if (this.$refs.history) {
+          (this.$refs.history as any).fetchHistoryList();
+        }
+      });
     },
     // 末尾补零
     formatZeroFill(event: any) {

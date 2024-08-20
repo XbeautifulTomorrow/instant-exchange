@@ -125,6 +125,7 @@
 import { defineComponent } from "vue";
 import { accurateDecimal } from "@/utils";
 import bigNumber from "bignumber.js";
+import { transferPaid } from "@/services/api/swap";
 import { useUserStore } from "@/store/user.js";
 import { useMessageStore } from "@/store/message.js";
 import { toNano, beginCell } from "@ton/ton";
@@ -267,6 +268,7 @@ export default defineComponent({
     },
     handleSuccess() {
       this.showConfirm = false;
+      this.$emit("success");
     },
     initTonweb() {},
     getExchangePrice() {
@@ -306,13 +308,13 @@ export default defineComponent({
 
       const {
         jettonAddr,
-        orderInfo: { cell },
+        orderInfo: { flashId, cell },
       } = this;
 
       // const body = beginCell()
       //   .storeUint(260734629, 32) // jetton 转账操作码
       //   .storeUint(0, 64) // query_id:uint64
-      //   .storeCoins(new bigNumber(amount).multipliedBy(100).toNumber()) // amount:(VarUInteger 16) -  转账的 Jetton 金额（小数位 = 6 - jUSDT, 9 - 默认）
+      //   .storeCoins(new bigNumber(amount).multipliedBy(100).toNumber()) // amount:(VarUInteger 16)
       //   .storeAddress(Address.parse(publicKey)) // destination:MsgAddress
       //   .storeAddress(Address.parse(walletAddr)) // response_destination:MsgAddress
       //   .storeUint(0, 1) // custom_payload:(Maybe ^Cell)
@@ -335,7 +337,8 @@ export default defineComponent({
 
       this.tonConnect
         .sendTransaction(transaction)
-        .then((res: any) => {
+        .then(async (res: any) => {
+          await transferPaid({ flashId });
           this.payment = true;
         })
         .catch((err: any) => {
@@ -346,7 +349,7 @@ export default defineComponent({
     // 处理TON转账
     async handleTransferTON() {
       const {
-        orderInfo: { publicKey, amount, remark },
+        orderInfo: { flashId, publicKey, amount, remark },
       } = this;
 
       // 创建评论
@@ -369,8 +372,9 @@ export default defineComponent({
 
       this.tonConnect
         .sendTransaction(transaction)
-        .then((res: any) => {
+        .then(async (res: any) => {
           this.payment = true;
+          await transferPaid({ flashId });
         })
         .catch((err: any) => {
           console.log(err);
