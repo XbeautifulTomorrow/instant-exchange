@@ -360,7 +360,7 @@ export default defineComponent({
         validUntil: Math.floor(Date.now() / 1000) + 360,
         messages: [
           {
-            address: (this.coinName = "GMT" ? this.jettonAddr : publicKey), // 目的地址
+            address: publicKey, // 目的地址
             amount: toNano(amount).toString(), //以nanotons计的Toncoin
             payload: body.toBoc().toString("base64"),
           },
