@@ -6,7 +6,7 @@
           <div class="operating">Send</div>
           <div class="balance">
             <span>
-              {{ `Bal: ${coinBalance || 0}` }}
+              {{ `Bal: ${Number(coinBalance || 0).toLocaleString()}` }}
             </span>
             <div class="max_btn" @click="handleMax()">MAX</div>
           </div>
@@ -141,9 +141,13 @@
         <div class="expected_item_left">Service Fee</div>
         <div class="expected_item_right" v-if="serviceFee">
           <div class="expected_item_val">
-            <span>{{
-              `≈ ${serviceFee} ${coinName == "GMT" ? "TON" : "GMT"}`
-            }}</span>
+            <span>
+              {{
+                `≈ ${Number(serviceFee).toLocaleString()} ${
+                  coinName == "GMT" ? "TON" : "GMT"
+                }`
+              }}
+            </span>
           </div>
         </div>
         <div class="expected_item_right" v-else>--</div>
