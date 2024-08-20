@@ -35,6 +35,7 @@
             variant="plain"
             hide-details="auto"
             reverse
+            type="number"
             @focus="fromOrTo = true"
             placeholder="Transfer ou."
           ></v-text-field>
@@ -71,6 +72,7 @@
             variant="plain"
             hide-details="auto"
             placeholder="Recive"
+            type="number"
             @focus="fromOrTo = false"
             reverse
           ></v-text-field>

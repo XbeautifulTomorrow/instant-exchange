@@ -104,6 +104,11 @@ export default defineComponent({
   margin-right: 8px;
 }
 
+.app_title {
+  font-size: 24px;
+  font-weight: 700;
+}
+
 .connect_info {
   display: flex;
   align-items: center;

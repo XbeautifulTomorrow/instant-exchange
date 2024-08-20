@@ -86,7 +86,7 @@ export default defineComponent({
   methods: {
     timeForStr: timeForStr,
     async fetchHistoryList() {
-      const res = await getHistoryList({ page: 1, size: 5 });
+      const res = await getHistoryList({ page: 1, size: 1 });
       if (res.code == 200) {
         this.historyList = res.data.records;
       }
