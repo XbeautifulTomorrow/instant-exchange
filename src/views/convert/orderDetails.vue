@@ -61,21 +61,21 @@
           <div class="to_val">
             <span v-if="history.receiveCoin == 'GMT'">
               {{
-                `+${accurateDecimal(history.receiveAmount || 0, 2)} ${
+                `+${accurateDecimal(history.actualReceiveAmount || 0, 2)} ${
                   history.receiveCoin
                 }`
               }}
             </span>
             <span v-else>
               {{
-                `+${accurateDecimal(history.receiveAmount || 0, 6)} ${
+                `+${accurateDecimal(history.actualReceiveAmount || 0, 6)} ${
                   history.receiveCoin
                 }`
               }}
             </span>
           </div>
           <div class="convert_val">
-            {{ `$${accurateDecimal(history.exchange || 0, 4)}` }}
+            {{ `$${exchangeUsd}` }}
           </div>
         </div>
         <div class="other_box">
@@ -133,6 +133,7 @@ interface orderInfo {
   receiveCoin: string; //兑换币种
   sendAmount: number; //源币种数量
   receiveAmount: number; //兑换币种数量
+  actualReceiveAmount: number; // 实际兑现数量
   createTime: string; //时间
   status: number;
   statusStr: string; //状态
@@ -158,6 +159,19 @@ export default defineComponent({
     gmtConvertUsd() {
       const { gmtConvertUsd } = useUserStore();
       return gmtConvertUsd;
+    },
+
+    // 实际接收的数量转化USD价值
+    exchangeUsd() {
+      const {
+        history: { actualReceiveAmount, exchange },
+      } = this;
+
+      const exchangeVal = new bigNumber(actualReceiveAmount || 0)
+        .multipliedBy(exchange || 0)
+        .toNumber();
+
+      return accurateDecimal(exchangeVal, 4);
     },
     // TON转化至USD价格
     tonConvertUsd() {
