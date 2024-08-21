@@ -15,10 +15,16 @@ const getCoinExchange = (params: any) => http.get(serverUrl + "/transfer/exchang
 const transferSwap = (params: any) => http.post(serverUrl + "/transfer/swap", params);
 
 /**
- * 闪兑详情
+ * ton支付
  * @param params
  */
 const transferPaid = (params: any) => http.get(serverUrl + "/transfer/paid", params);
+
+/**
+ * 重试转账
+ * @param params
+ */
+const transferRetry = (params: any) => http.get(serverUrl + "/transfer/retry", params);
 
 /**
  * 闪兑分页列表
@@ -44,6 +50,7 @@ export {
   getCoinExchange,
   transferSwap,
   transferPaid,
+  transferRetry,
   getHistoryList,
   getHistoryDetails,
   getSlippage

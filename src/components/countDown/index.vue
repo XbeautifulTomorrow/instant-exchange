@@ -6,10 +6,12 @@
         h: hours,
         m: mins,
         s: seconds,
+        sAll: secondsAll,
         dd: `00${days}`.slice(-2),
         hh: `00${hours}`.slice(-2),
         mm: `00${mins}`.slice(-2),
         ss: `00${seconds}`.slice(-2),
+        ssAll: `00${secondsAll}`.slice(-2),
       }"
     ></slot>
   </div>
@@ -24,6 +26,7 @@ export default defineComponent({
     hours: "00" as number | string | any,
     mins: "00" as number | string | any,
     seconds: "00" as number | string | any,
+    secondsAll: "0" as number | string | any,
     timer: null as number | any,
     curTime: 0,
   }),
@@ -76,14 +79,16 @@ export default defineComponent({
       let nm = 1000 * 60; // 一分钟的毫秒数
       let ns = 1000; // 一秒钟的毫秒数;
 
-      let dd = diff / nd; // 计算差多少天
+      let dd = diff / nd; // 计算剩余差多少天
       // eslint-disable-next-line no-unused-vars
-      let hh = (diff % nd) / nh; // 计算差多少小时
+      let hh = (diff % nd) / nh; // 计算剩余差多少小时
       // eslint-disable-next-line no-unused-vars
-      let mm = ((diff % nd) % nh) / nm; // 计算差多少分钟
+      let mm = ((diff % nd) % nh) / nm; // 计算剩余差多少分钟
       // eslint-disable-next-line no-unused-vars
-      let ss = (((diff % nd) % nh) % nm) / ns; // 计算差多少秒//输出结果
-      return { dd, hh, mm, ss };
+      let ss = (((diff % nd) % nh) % nm) / ns; // 计算剩余差多少秒//输出结果
+      // eslint-disable-next-line no-unused-vars
+      let ssAll = diff / ns; // 计算全部差多少秒
+      return { dd, hh, mm, ss, ssAll };
     },
     countDown() {
       if (!this.time) return;
@@ -95,15 +100,17 @@ export default defineComponent({
       if (time <= 1000) {
         // 计时结束
         this.seconds = "00";
+        this.secondsAll = "0";
         this.$emit("onEnd");
         return;
       }
       // eslint-disable-next-line object-curly-newline
-      const { dd, hh, mm, ss } = this.durationFormatter(time);
+      const { dd, hh, mm, ss, ssAll } = this.durationFormatter(time);
       this.days = Math.floor(dd) || 0;
       this.hours = Math.floor(hh) || 0;
       this.mins = Math.floor(mm) || 0;
       this.seconds = Math.floor(ss) || 0;
+      this.secondsAll = Math.floor(ssAll) || 0;
       this.timer = setTimeout(() => {
         const now = new Date().getTime();
         const diffTime = Math.floor(now - this.curTime);

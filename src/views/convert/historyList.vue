@@ -20,8 +20,8 @@
             </div>
             <div
               class="history_item"
-              v-for="event in item.order"
-              :key="event.flashId"
+              v-for="(event, index) in item.order"
+              :key="index"
               @click="handleShowDetails(event)"
             >
               <div class="history_item_info">
@@ -45,7 +45,7 @@
                   </div>
                 </div>
                 <div class="history_item_info_right">
-                  <div class="receive">
+                  <div v-if="event.status == 4" class="receive">
                     <span v-if="event.receiveCoin == 'GMT'">
                       {{
                         `+${accurateDecimal(event.receiveAmount, 2)} ${
@@ -61,6 +61,23 @@
                       }}
                     </span>
                   </div>
+                  <div class="status fail" v-else-if="event.status == 5">
+                    <div>Fail</div>
+                    <div class="retry_btn" @click="handleRetry(event)">
+                      <countDown
+                        v-if="event.isRetry"
+                        v-slot="timeObj"
+                        :time="event.nextRetryTime"
+                        @onEnd="event.isRetry = false"
+                      >
+                        <span class="retry_btn_text">
+                          {{ `Retry(${timeObj.sAll})` }}
+                        </span>
+                      </countDown>
+                      <span v-else>Retry</span>
+                    </div>
+                  </div>
+                  <div class="status in_progress" v-else>In Progress</div>
                   <div class="send">
                     <span v-if="event.sendCoin == 'GMT'">
                       {{
@@ -98,6 +115,9 @@ import { useMessageStore } from "@/store/message.js";
 import { getHistoryList } from "@/services/api/swap";
 import { timeForStr, accurateDecimal } from "@/utils";
 import { useUserStore } from "@/store/user";
+import { transferRetry } from "@/services/api/swap";
+
+import countDown from "@/components/countDown/index.vue";
 
 interface orderInfo {
   flashId: number; //闪兑订单ID
@@ -107,7 +127,9 @@ interface orderInfo {
   sendAmount: number; //源币种数量
   receiveAmount: number; //兑换币种数量
   createTime: string; //时间
-  status: string;
+  nextRetryTime: string | number | any; // 重新尝试时间
+  status: number; // 状态 0-未付款，1-转账中，2-进行中，3-打款中，4-成功，5-失败
+  isRetry: boolean; // 前端计算的状态
   statusStr: string; //状态
 }
 
@@ -124,6 +146,7 @@ export default defineComponent({
   },
   components: {
     orderDetails,
+    countDown,
   },
   created() {
     this.fetchHistoryList();
@@ -204,12 +227,40 @@ export default defineComponent({
         } else {
           this.historyList.push.apply(this.historyList, res.data.records);
         }
+
+        for (let i = 0; i < this.historyList.length; i++) {
+          const element = this.historyList[i];
+
+          this.historyList[i].isRetry = this.formatRetry(element.nextRetryTime);
+        }
       }
     },
     handleShowDetails(event: orderInfo) {
+      if (event.status != 4) return;
       const { setShowDetails } = useMessageStore();
       this.historyId = event.flashId;
       setShowDetails(true);
+    },
+
+    // 是否可以重试
+    formatRetry(event: string) {
+      const { currentTime } = useUserStore();
+      if (!event) return true;
+
+      const current = new Date(currentTime).getTime();
+      const endstamp = new Date(event).getTime();
+      if (endstamp > current) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    async handleRetry(event: orderInfo) {
+      if (event.isRetry) return;
+      const res = await transferRetry({ flashId: event.flashId });
+      if (res.code == 200) {
+        this.fetchHistoryList();
+      }
     },
     // 处理滚动事件
     async handleScroll(event: Event) {
@@ -395,6 +446,36 @@ li {
     font-size: 16px;
     text-align: right;
     color: #000;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 16px;
+
+    &.in_progress {
+      color: #0098eb;
+    }
+
+    &.fail {
+      color: #ff0101;
+    }
+  }
+
+  .retry_btn {
+    background-color: #f2f3f5;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-left: 4px;
+    font-weight: 400;
+    color: #333333;
+    cursor: pointer;
+  }
+
+  .retry_btn_text {
+    color: #c4c4c4;
   }
 }
 

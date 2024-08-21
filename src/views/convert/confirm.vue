@@ -92,6 +92,10 @@
             </div>
           </div>
         </div>
+        <div class="hint_box" v-if="!countdown">
+          <v-img :width="16" cover src="@/assets/images/icon_hint.svg"></v-img>
+          <span>The quote has expired. Refresh to get the latest quote.</span>
+        </div>
         <div
           class="confirm_btn"
           @click="coinName == 'GMT' ? handleTransferGMT() : handleTransferTON()"
@@ -594,6 +598,19 @@ li {
   font-weight: 700;
   color: rgba(0, 0, 0, 0.4);
   text-align: center;
+}
+
+.hint_box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #aeaeae;
+
+  .v-img {
+    flex: none;
+    margin-right: 4px;
+  }
 }
 
 .confirm_btn {
