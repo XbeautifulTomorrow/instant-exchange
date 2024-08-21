@@ -182,6 +182,7 @@ li {
   position: absolute;
   top: 16px;
   right: 16px;
+  cursor: pointer;
 }
 
 .slippage_input {
@@ -204,6 +205,7 @@ li {
     text-align: center;
     font-size: 14px;
     z-index: 2;
+    cursor: pointer;
   }
 
   .input_slider {
@@ -267,5 +269,6 @@ li {
   justify-content: center;
   color: white;
   padding: 10px 0;
+  cursor: pointer;
 }
 </style>

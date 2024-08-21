@@ -116,6 +116,7 @@ import { getHistoryList } from "@/services/api/swap";
 import { timeForStr, accurateDecimal } from "@/utils";
 import { useUserStore } from "@/store/user";
 import { transferRetry } from "@/services/api/swap";
+import { Address } from "@ton/ton";
 
 import countDown from "@/components/countDown/index.vue";
 
@@ -297,9 +298,10 @@ export default defineComponent({
      * @description: 格式化地址
      */
     formatAddr(event: string) {
-      if (!event) return "";
+      if (!event) return event;
+      const addr = Address.parse(event).toString();
       var reg = /^(\S{8})\S+(\S{6})$/;
-      return event.replace(reg, "$1***$2");
+      return addr.replace(reg, "$1...$2");
     },
   },
   watch: {
@@ -394,6 +396,7 @@ li {
 
 .history_item {
   padding: 8px;
+  cursor: pointer;
 }
 
 .history_item_info {

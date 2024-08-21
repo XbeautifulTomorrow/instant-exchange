@@ -125,6 +125,7 @@ import { useMessageStore } from "@/store/message.js";
 import { useUserStore } from "@/store/user.js";
 import bigNumber from "bignumber.js";
 import { accurateDecimal, openUrl } from "@/utils";
+import { Address } from "@ton/ton";
 
 interface orderInfo {
   id: number; //闪兑订单ID
@@ -221,9 +222,10 @@ export default defineComponent({
      * @description: 格式化地址
      */
     formatAddr(event: string) {
-      if (!event) return "";
-      var reg = /^(\S{18})\S+(\S{6})$/;
-      return event.replace(reg, "$1***$2");
+      if (!event) return event;
+      const addr = Address.parse(event).toString();
+      var reg = /^(\S{8})\S+(\S{6})$/;
+      return addr.replace(reg, "$1...$2");
     },
     /**
      * @description: 格式化Hash地址

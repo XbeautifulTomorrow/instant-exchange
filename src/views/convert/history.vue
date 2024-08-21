@@ -90,6 +90,7 @@ import { getHistoryList } from "@/services/api/swap";
 import { accurateDecimal, timeForStr } from "@/utils";
 import { useUserStore } from "@/store/user";
 import { transferRetry } from "@/services/api/swap";
+import { Address } from "@ton/ton";
 
 import countDown from "@/components/countDown/index.vue";
 
@@ -153,9 +154,10 @@ export default defineComponent({
      * @description: 格式化地址
      */
     formatAddr(event: string) {
-      if (!event) return "";
+      if (!event) return event;
+      const addr = Address.parse(event).toString();
       var reg = /^(\S{8})\S+(\S{6})$/;
-      return event.replace(reg, "$1***$2");
+      return addr.replace(reg, "$1...$2");
     },
     // 更多历史
     toHistory() {
@@ -223,6 +225,7 @@ li {
   padding: 8px;
   opacity: 1;
   transition: opacity 0.5s, transform 0.5s ease;
+  cursor: pointer;
 }
 
 .list-enter-active,

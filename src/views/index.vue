@@ -640,6 +640,7 @@ export default defineComponent({
   font-weight: 400;
   font-style: normal;
   font-size: 16px;
+  cursor: pointer;
 }
 
 .convert_btn {
@@ -647,6 +648,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 
   .v-img {
     flex: none;
@@ -733,6 +735,7 @@ export default defineComponent({
     padding: 4px;
     border-radius: 4px;
     background-color: #f2f3f5;
+    cursor: pointer;
 
     .v-img {
       flex: none;
