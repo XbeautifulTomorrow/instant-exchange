@@ -276,7 +276,8 @@ export default defineComponent({
       if (!fromAmount || !toAmount) {
         isPass = true;
       }
-      if (coinBalance < fromAmount) {
+
+      if (Number(coinBalance) < Number(fromAmount)) {
         isPass = true;
       }
 
@@ -410,7 +411,7 @@ export default defineComponent({
     },
     handleMax() {
       this.fromOrTo = true;
-      this.fromAmount = this.coinBalance;
+      this.fromAmount = accurateDecimal(this.coinBalance || 0, 6);
     },
     // 转换 源币种
     async handleConvert() {
@@ -527,7 +528,12 @@ export default defineComponent({
     recomputeNum(newV: number) {
       if (newV > 1) {
         const { fromOrTo } = this;
-        useUserStore().setRecomputeNum(0);
+
+        const { showConfirm } = useMessageStore();
+
+        if (!showConfirm) {
+          useUserStore().setRecomputeNum(0);
+        }
 
         if (fromOrTo) {
           if (!this.fromAmount) return;

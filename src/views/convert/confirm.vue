@@ -30,7 +30,14 @@
               </div>
               <div class="info_action">From</div>
               <div class="info_amount">
-                {{ `${orderInfo.amount} ${coinName}` }}
+                <span v-if="coinName == 'GMT'">
+                  {{ `${formatNumber(orderInfo.amount || 0, 2)} ${coinName}` }}
+                </span>
+                <span v-else>
+                  {{
+                    `${formatNumber(orderInfo.amount || 0, 6)} ${coinName}`
+                  }}</span
+                >
               </div>
             </div>
             <div class="info_center">
@@ -57,7 +64,12 @@
               </div>
               <div class="info_action">To</div>
               <div class="info_amount">
-                {{ `${toAmount} ${coinName == "GMT" ? "TON" : "GMT"}` }}
+                <span v-if="coinName == 'GMT'">
+                  {{ `${formatNumber(toAmount || 0, 6)} TON` }}
+                </span>
+                <span v-else>
+                  {{ `${formatNumber(toAmount || 0, 2)} GMT` }}
+                </span>
               </div>
             </div>
           </div>
@@ -66,10 +78,10 @@
               <div class="expected_item_left">Swap Rate</div>
               <div class="expected_item_right">
                 <div v-if="coinName == 'GMT'" class="expected_item_val">
-                  {{ `1 GMT ≈ ${swapTONRate} TON` }}
+                  {{ `1 GMT ≈ ${formatNumber(swapTONRate || 0, 6)} TON` }}
                 </div>
                 <div v-else class="expected_item_val">
-                  {{ `1 TON ≈ ${swapGMTRate} GMT` }}
+                  {{ `1 TON ≈ ${formatNumber(swapGMTRate || 0, 2)} GMT` }}
                 </div>
               </div>
             </div>
@@ -84,7 +96,9 @@
               <div class="expected_item_right" v-if="serviceFee">
                 <div class="expected_item_val">
                   <span>{{
-                    `≈ ${serviceFee} ${coinName == "GMT" ? "TON" : "GMT"}`
+                    `≈ ${formatNumber(serviceFee || 0, 6)} ${
+                      coinName == "GMT" ? "TON" : "GMT"
+                    }`
                   }}</span>
                 </div>
               </div>
@@ -191,6 +205,10 @@ export default defineComponent({
     jettonAddr() {
       const { jettonAddr } = useUserStore();
       return jettonAddr;
+    },
+    recomputeNum() {
+      const { recomputeNum } = useUserStore();
+      return recomputeNum;
     },
     orderInfo() {
       const { orderInfo } = useMessageStore();
@@ -417,37 +435,25 @@ export default defineComponent({
       var reg = /^(\S{18})\S+(\S{6})$/;
       return event.replace(reg, "$1***$2");
     },
+    // 格式化数字
+    formatNumber(event: number | string, type: number) {
+      const num = accurateDecimal(event, type);
+      return Number(num).toLocaleString(undefined, {
+        maximumFractionDigits: type,
+      });
+    },
   },
   watch: {
     orderInfo() {
       this.coinName = this.orderInfo.coinName as coin;
-      this.getToAmount();
       this.getExchangePrice();
     },
     recomputeNum(newV: number) {
       if (newV > 1) {
+        if (!this.showConfirm) return;
+
+        this.getToAmount();
         useUserStore().setRecomputeNum(0);
-
-        const {
-          orderInfo: { amount },
-          coinName,
-          swapGMTRate,
-          swapTONRate,
-        } = this;
-
-        if (coinName == "GMT") {
-          const amountV = new bigNumber(amount || 0)
-            .multipliedBy(swapTONRate)
-            .toNumber();
-
-          this.toAmount = amountV ? accurateDecimal(amountV, 6) : null;
-        } else {
-          const amountV = new bigNumber(amount || 0)
-            .multipliedBy(swapGMTRate)
-            .toNumber();
-
-          this.toAmount = amountV ? accurateDecimal(amountV, 6) : null;
-        }
       }
     },
   },

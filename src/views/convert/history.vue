@@ -58,6 +58,9 @@
                 <span v-else>Retry</span>
               </div>
             </div>
+            <div class="status cancelled" v-else-if="item.status == 6">
+              Cancelled
+            </div>
             <div class="status in_progress" v-else>In Progress</div>
             <div class="send">
               <span v-if="item.sendCoin == 'GMT'">
@@ -154,6 +157,7 @@ export default defineComponent({
       const addr = Address.parse(event).toString({
         bounceable: false,
       });
+
       var reg = /^(\S{8})\S+(\S{6})$/;
       return addr.replace(reg, "$1...$2");
     },
@@ -306,6 +310,7 @@ li {
   .status {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     font-weight: 700;
     font-style: normal;
     font-size: 16px;
@@ -316,6 +321,10 @@ li {
 
     &.fail {
       color: #ff0101;
+    }
+
+    &.cancelled {
+      color: #c8c8c8;
     }
   }
 

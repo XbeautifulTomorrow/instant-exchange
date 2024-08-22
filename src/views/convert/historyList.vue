@@ -77,6 +77,9 @@
                       <span v-else>Retry</span>
                     </div>
                   </div>
+                  <div class="status cancelled" v-else-if="event.status == 6">
+                    Cancelled
+                  </div>
                   <div class="status in_progress" v-else>In Progress</div>
                   <div class="send">
                     <span v-if="event.sendCoin == 'GMT'">
@@ -462,6 +465,7 @@ li {
   .status {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     font-weight: 700;
     font-style: normal;
     font-size: 16px;
@@ -472,6 +476,10 @@ li {
 
     &.fail {
       color: #ff0101;
+    }
+
+    &.cancelled {
+      color: #c8c8c8;
     }
   }
 
