@@ -38,6 +38,7 @@
             type="number"
             @focus="fromOrTo = true"
             placeholder="Transfer ou."
+            @input="handleInput"
           ></v-text-field>
         </div>
       </div>
@@ -75,6 +76,7 @@
             type="number"
             @focus="fromOrTo = false"
             reverse
+            @input="handleInput"
           ></v-text-field>
         </div>
       </div>
@@ -112,7 +114,7 @@
             {{ `1 GMT ≈ ${formatNumber(swapTONRate || 0, 6)} TON` }}
           </div>
           <div v-else class="expected_item_val">
-            {{ `1 TON ≈ ${formatNumber(swapGMTRate || 0, 6)} GMT` }}
+            {{ `1 TON ≈ ${formatNumber(swapGMTRate || 0, 2)} GMT` }}
           </div>
           <div class="operating_box" @click="getExchangePrice()">
             <v-img
@@ -143,9 +145,10 @@
           <div class="expected_item_val">
             <span>
               {{
-                `≈ ${formatNumber(serviceFee || 0, 6)} ${
-                  coinName == "GMT" ? "TON" : "GMT"
-                }`
+                `≈ ${formatNumber(
+                  serviceFee || 0,
+                  coinName == "GMT" ? 6 : 2
+                )} ${coinName == "GMT" ? "TON" : "GMT"}`
               }}
             </span>
           </div>
@@ -169,7 +172,7 @@ import { useMessageStore } from "@/store/message.js";
 
 // 工具类
 import bigNumber from "bignumber.js";
-import { accurateDecimal } from "@/utils";
+import { accurateDecimal, isEmpty } from "@/utils";
 
 import history from "./convert/history.vue";
 import slippage from "./convert/slippage.vue";
@@ -306,6 +309,32 @@ export default defineComponent({
     },
   },
   methods: {
+    handleInput(event: any) {
+      let {
+        target: { _value },
+      } = event;
+
+      if (isEmpty(_value)) {
+        return;
+      }
+
+      // 去除非数字字符
+      let value = _value.replace(/[^\d.]/g, "");
+      // 更新输入框的值
+      if (this.fromOrTo) {
+        if (this.coinName == "GMT") {
+          this.fromAmount = accurateDecimal(value, 2);
+        } else {
+          this.fromAmount = accurateDecimal(value, 6);
+        }
+      } else {
+        if (this.coinName == "TON") {
+          this.toAmount = accurateDecimal(value, 2);
+        } else {
+          this.toAmount = accurateDecimal(value, 6);
+        }
+      }
+    },
     getExchangePrice() {
       const { fetchCoinExchange } = useUserStore();
       fetchCoinExchange("GMT");
@@ -480,7 +509,7 @@ export default defineComponent({
     },
   },
   watch: {
-    fromAmount(newV: any) {
+    fromAmount(newV: any, oldV: any) {
       if (!this.fromOrTo) return;
 
       if (!newV) {
@@ -499,7 +528,7 @@ export default defineComponent({
           .multipliedBy(swapGMTRate)
           .toNumber();
 
-        this.toAmount = amount ? accurateDecimal(amount, 6) : null;
+        this.toAmount = amount ? accurateDecimal(amount, 2) : null;
       }
     },
     toAmount(newV: any) {
@@ -516,7 +545,7 @@ export default defineComponent({
           .multipliedBy(swapGMTRate)
           .toNumber();
 
-        this.fromAmount = amount ? accurateDecimal(amount, 6) : null;
+        this.fromAmount = amount ? accurateDecimal(amount, 2) : null;
       } else {
         const amount = new bigNumber(newV || 0)
           .multipliedBy(swapTONRate)
@@ -551,7 +580,7 @@ export default defineComponent({
               .multipliedBy(swapGMTRate)
               .toNumber();
 
-            this.toAmount = amount ? accurateDecimal(amount, 6) : null;
+            this.toAmount = amount ? accurateDecimal(amount, 2) : null;
           }
         } else {
           if (!this.toAmount) return;
@@ -563,7 +592,7 @@ export default defineComponent({
               .multipliedBy(swapGMTRate)
               .toNumber();
 
-            this.fromAmount = amount ? accurateDecimal(amount, 6) : null;
+            this.fromAmount = amount ? accurateDecimal(amount, 2) : null;
           } else {
             const amount = new bigNumber(toAmount || 0)
               .multipliedBy(swapTONRate)

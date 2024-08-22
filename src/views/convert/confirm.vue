@@ -30,14 +30,12 @@
               </div>
               <div class="info_action">From</div>
               <div class="info_amount">
-                <span v-if="coinName == 'GMT'">
-                  {{ `${formatNumber(orderInfo.amount || 0, 2)} ${coinName}` }}
-                </span>
-                <span v-else>
-                  {{
-                    `${formatNumber(orderInfo.amount || 0, 6)} ${coinName}`
-                  }}</span
-                >
+                {{
+                  `${formatNumber(
+                    orderInfo.amount || 0,
+                    coinName == "GMT" ? 2 : 6
+                  )} ${coinName}`
+                }}
               </div>
             </div>
             <div class="info_center">
@@ -64,12 +62,12 @@
               </div>
               <div class="info_action">To</div>
               <div class="info_amount">
-                <span v-if="coinName == 'GMT'">
-                  {{ `${formatNumber(toAmount || 0, 6)} TON` }}
-                </span>
-                <span v-else>
-                  {{ `${formatNumber(toAmount || 0, 2)} GMT` }}
-                </span>
+                {{
+                  `${formatNumber(
+                    toAmount || 0,
+                    coinName == "GMT" ? 6 : 2
+                  )} TON`
+                }}
               </div>
             </div>
           </div>
@@ -96,9 +94,10 @@
               <div class="expected_item_right" v-if="serviceFee">
                 <div class="expected_item_val">
                   <span>{{
-                    `≈ ${formatNumber(serviceFee || 0, 6)} ${
-                      coinName == "GMT" ? "TON" : "GMT"
-                    }`
+                    `≈ ${formatNumber(
+                      serviceFee || 0,
+                      coinName == "GMT" ? 6 : 2
+                    )} ${coinName == "GMT" ? "TON" : "GMT"}`
                   }}</span>
                 </div>
               </div>
@@ -226,6 +225,7 @@ export default defineComponent({
           this.payment = false;
           this.coinName = "GMT";
           this.toAmount = 0;
+          this.clearTimerFun();
           this.timer = null;
           this.countdown = 10;
           this.timeMsg = "10s";

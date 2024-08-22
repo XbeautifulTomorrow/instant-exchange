@@ -46,20 +46,11 @@
                 </div>
                 <div class="history_item_info_right">
                   <div v-if="event.status == 4" class="receive">
-                    <span v-if="event.receiveCoin == 'GMT'">
-                      {{
-                        `+${formatNumber(event.receiveAmount, 2)} ${
-                          event.receiveCoin
-                        }`
-                      }}
-                    </span>
-                    <span v-else>
-                      {{
-                        `+${formatNumber(event.receiveAmount, 6)} ${
-                          event.receiveCoin
-                        }`
-                      }}
-                    </span>
+                    {{
+                      `+${formatNumber(event.receiveAmount, 6)} ${
+                        event.receiveCoin
+                      }`
+                    }}
                   </div>
                   <div class="status fail" v-else-if="event.status == 5">
                     <div>Fail</div>
