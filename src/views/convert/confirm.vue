@@ -132,7 +132,7 @@
           Your transaction has been sent to the network and will be processed
           within a few minutes.
         </div>
-        <div class="confirm_btn" @click="handleSuccess()">OK</div>
+        <div class="confirm_btn" @click="handleReady()">OK</div>
       </div>
     </v-dialog>
   </div>
@@ -225,12 +225,14 @@ export default defineComponent({
           this.payment = false;
           this.coinName = "GMT";
           this.toAmount = 0;
+
+          setoOrderInfo({} as any);
+          this.$emit("success");
+
           this.clearTimerFun();
           this.timer = null;
           this.countdown = 10;
           this.timeMsg = "10s";
-
-          setoOrderInfo({} as any);
         }
 
         setShowConfirm(val);
@@ -287,10 +289,6 @@ export default defineComponent({
   methods: {
     handleReady() {
       this.showConfirm = false;
-    },
-    handleSuccess() {
-      this.showConfirm = false;
-      this.$emit("success");
     },
     initTonweb() {},
     getExchangePrice() {
