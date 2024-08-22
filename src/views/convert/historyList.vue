@@ -299,7 +299,9 @@ export default defineComponent({
      */
     formatAddr(event: string) {
       if (!event) return event;
-      const addr = Address.parse(event).toString();
+      const addr = Address.parse(event).toString({
+        bounceable: false,
+      });
       var reg = /^(\S{8})\S+(\S{6})$/;
       return addr.replace(reg, "$1...$2");
     },
