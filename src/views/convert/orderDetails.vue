@@ -45,7 +45,7 @@
           <div class="from_val">
             {{
               `-${formatNumber(
-                history.sendAmount || 0,
+                history.actualSendAmount || 0,
                 history.sendCoin == "GMT" ? 2 : 6
               )} ${history.sendCoin}`
             }}
@@ -121,6 +121,7 @@ interface orderInfo {
   receiveCoin: string; //兑换币种
   sendAmount: number; //源币种数量
   receiveAmount: number; //兑换币种数量
+  actualSendAmount: number; // 实际发送数量
   actualReceiveAmount: number; // 实际兑现数量
   createTime: string; //时间
   status: number;
