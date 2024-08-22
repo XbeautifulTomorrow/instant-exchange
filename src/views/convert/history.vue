@@ -33,16 +33,12 @@
             <div v-if="item.status == 4" class="receive">
               <span v-if="item.receiveCoin == 'GMT'">
                 {{
-                  `+${accurateDecimal(item.receiveAmount, 2)} ${
-                    item.receiveCoin
-                  }`
+                  `+${formatNumber(item.receiveAmount, 2)} ${item.receiveCoin}`
                 }}
               </span>
               <span v-else>
                 {{
-                  `+${accurateDecimal(item.receiveAmount, 6)} ${
-                    item.receiveCoin
-                  }`
+                  `+${formatNumber(item.receiveAmount, 6)} ${item.receiveCoin}`
                 }}
               </span>
             </div>
@@ -56,7 +52,7 @@
                   @onEnd="item.isRetry = false"
                 >
                   <span class="retry_btn_text">
-                    {{ `Retry(${timeObj.sAll})` }}
+                    {{ `Retry (${timeObj.sAll})` }}
                   </span>
                 </countDown>
                 <span v-else>Retry</span>
@@ -65,10 +61,10 @@
             <div class="status in_progress" v-else>In Progress</div>
             <div class="send">
               <span v-if="item.sendCoin == 'GMT'">
-                {{ `-${accurateDecimal(item.sendAmount, 2)} ${item.sendCoin}` }}
+                {{ `-${formatNumber(item.sendAmount, 2)} ${item.sendCoin}` }}
               </span>
               <span v-else>
-                {{ `-${accurateDecimal(item.sendAmount, 6)} ${item.sendCoin}` }}
+                {{ `-${formatNumber(item.sendAmount, 6)} ${item.sendCoin}` }}
               </span>
             </div>
           </div>
@@ -186,6 +182,11 @@ export default defineComponent({
       if (res.code == 200) {
         this.fetchHistoryList();
       }
+    },
+    // 格式化数字
+    formatNumber(event: number | string, type: number) {
+      const num = accurateDecimal(event, type);
+      return Number(num).toLocaleString();
     },
   },
 });

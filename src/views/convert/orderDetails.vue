@@ -45,14 +45,14 @@
           <div class="from_val">
             <span v-if="history.sendCoin == 'GMT'">
               {{
-                `-${accurateDecimal(history.sendAmount || 0, 2)} ${
+                `-${formatNumber(history.sendAmount || 0, 2)} ${
                   history.sendCoin
                 }`
               }}
             </span>
             <span v-else>
               {{
-                `-${accurateDecimal(history.sendAmount || 0, 6)} ${
+                `-${formatNumber(history.sendAmount || 0, 6)} ${
                   history.sendCoin
                 }`
               }}
@@ -61,21 +61,21 @@
           <div class="to_val">
             <span v-if="history.receiveCoin == 'GMT'">
               {{
-                `+${accurateDecimal(history.actualReceiveAmount || 0, 2)} ${
+                `+${formatNumber(history.actualReceiveAmount || 0, 2)} ${
                   history.receiveCoin
                 }`
               }}
             </span>
             <span v-else>
               {{
-                `+${accurateDecimal(history.actualReceiveAmount || 0, 6)} ${
+                `+${formatNumber(history.actualReceiveAmount || 0, 6)} ${
                   history.receiveCoin
                 }`
               }}
             </span>
           </div>
           <div class="convert_val">
-            {{ `$${exchangeUsd}` }}
+            {{ `$${Number(exchangeUsd).toLocaleString()}` }}
           </div>
         </div>
         <div class="other_box">
@@ -93,12 +93,12 @@
             <div class="title">Service Fee</div>
             <div class="val">
               {{
-                `${accurateDecimal(history.fee || 0, 2)} ${history.receiveCoin}`
+                `${formatNumber(history.fee || 0, 2)} ${history.receiveCoin}`
               }}
             </div>
           </div>
           <div class="convert_box">
-            {{ `$ ${accurateDecimal(usdFee || 0, 4)}` }}
+            {{ `$ ${formatNumber(usdFee || 0, 4)}` }}
           </div>
         </div>
         <div
@@ -239,6 +239,10 @@ export default defineComponent({
     handleOpenLink(event: string) {
       const url = `https://tonscan.org/tx/by-msg-hash/`;
       openUrl(url + event);
+    },
+    formatNumber(event: number | string, type: number) {
+      const num = accurateDecimal(event, type);
+      return Number(num).toLocaleString();
     },
   },
   watch: {

@@ -48,14 +48,14 @@
                   <div v-if="event.status == 4" class="receive">
                     <span v-if="event.receiveCoin == 'GMT'">
                       {{
-                        `+${accurateDecimal(event.receiveAmount, 2)} ${
+                        `+${formatNumber(event.receiveAmount, 2)} ${
                           event.receiveCoin
                         }`
                       }}
                     </span>
                     <span v-else>
                       {{
-                        `+${accurateDecimal(event.receiveAmount, 6)} ${
+                        `+${formatNumber(event.receiveAmount, 6)} ${
                           event.receiveCoin
                         }`
                       }}
@@ -71,7 +71,7 @@
                         @onEnd="event.isRetry = false"
                       >
                         <span class="retry_btn_text">
-                          {{ `Retry(${timeObj.sAll})` }}
+                          {{ `Retry (${timeObj.sAll})` }}
                         </span>
                       </countDown>
                       <span v-else>Retry</span>
@@ -81,14 +81,14 @@
                   <div class="send">
                     <span v-if="event.sendCoin == 'GMT'">
                       {{
-                        `-${accurateDecimal(event.sendAmount, 2)} ${
+                        `-${formatNumber(event.sendAmount, 2)} ${
                           event.sendCoin
                         }`
                       }}
                     </span>
                     <span v-else>
                       {{
-                        `-${accurateDecimal(event.sendAmount, 6)} ${
+                        `-${formatNumber(event.sendAmount, 6)} ${
                           event.sendCoin
                         }`
                       }}
@@ -231,7 +231,6 @@ export default defineComponent({
 
         for (let i = 0; i < this.historyList.length; i++) {
           const element = this.historyList[i];
-
           this.historyList[i].isRetry = this.formatRetry(element.nextRetryTime);
         }
       }
@@ -304,6 +303,11 @@ export default defineComponent({
       });
       var reg = /^(\S{8})\S+(\S{6})$/;
       return addr.replace(reg, "$1...$2");
+    },
+    // 格式化数字
+    formatNumber(event: number | string, type: number) {
+      const num = accurateDecimal(event, type);
+      return Number(num).toLocaleString();
     },
   },
   watch: {
