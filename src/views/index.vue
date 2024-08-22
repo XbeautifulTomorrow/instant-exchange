@@ -6,7 +6,7 @@
           <div class="operating">Send</div>
           <div class="balance">
             <span>
-              {{ `Bal: ${Number(coinBalance || 0).toLocaleString()}` }}
+              {{ `Bal: ${formatNumber(coinBalance || 0, 6)}` }}
             </span>
             <div class="max_btn" @click="handleMax()">MAX</div>
           </div>
@@ -109,10 +109,10 @@
         <div class="expected_item_left">Swap Rate</div>
         <div class="expected_item_right" v-if="swapTONRate && swapGMTRate">
           <div v-if="coinName == 'GMT'" class="expected_item_val">
-            {{ `1 GMT ≈ ${Number(swapTONRate).toLocaleString()} TON` }}
+            {{ `1 GMT ≈ ${formatNumber(swapTONRate || 0, 6)} TON` }}
           </div>
           <div v-else class="expected_item_val">
-            {{ `1 TON ≈ ${Number(swapGMTRate).toLocaleString()} GMT` }}
+            {{ `1 TON ≈ ${formatNumber(swapGMTRate || 0, 6)} GMT` }}
           </div>
           <div class="operating_box" @click="getExchangePrice()">
             <v-img
@@ -143,7 +143,7 @@
           <div class="expected_item_val">
             <span>
               {{
-                `≈ ${Number(serviceFee).toLocaleString()} ${
+                `≈ ${formatNumber(serviceFee || 0, 6)} ${
                   coinName == "GMT" ? "TON" : "GMT"
                 }`
               }}
@@ -214,6 +214,10 @@ export default defineComponent({
     tonConvertUsd() {
       const { tonConvertUsd } = useUserStore();
       return tonConvertUsd;
+    },
+    recomputeNum() {
+      const { recomputeNum } = useUserStore();
+      return recomputeNum;
     },
     slippageRate() {
       const { slippageNum } = this;
@@ -466,6 +470,14 @@ export default defineComponent({
 
       return str;
     },
+    // 格式化数字
+    formatNumber(event: number | string, type: number) {
+      const num = accurateDecimal(event, type);
+      return Number(num).toLocaleString(undefined, {
+        maximumFractionDigits: type,
+        useGrouping: false,
+      });
+    },
   },
   watch: {
     fromAmount(newV: any) {
@@ -511,6 +523,50 @@ export default defineComponent({
           .toNumber();
 
         this.fromAmount = amount ? accurateDecimal(amount, 6) : null;
+      }
+    },
+    recomputeNum(newV: number) {
+      if (newV > 1) {
+        const { fromOrTo } = this;
+        useUserStore().setRecomputeNum(0);
+
+        if (fromOrTo) {
+          if (!this.fromAmount) return;
+
+          const { fromAmount, coinName, swapGMTRate, swapTONRate } = this;
+
+          if (coinName == "GMT") {
+            const amount = new bigNumber(fromAmount || 0)
+              .multipliedBy(swapTONRate)
+              .toNumber();
+
+            this.toAmount = amount ? accurateDecimal(amount, 6) : null;
+          } else {
+            const amount = new bigNumber(fromAmount || 0)
+              .multipliedBy(swapGMTRate)
+              .toNumber();
+
+            this.toAmount = amount ? accurateDecimal(amount, 6) : null;
+          }
+        } else {
+          if (!this.toAmount) return;
+
+          const { toAmount, coinName, swapGMTRate, swapTONRate } = this;
+
+          if (coinName == "GMT") {
+            const amount = new bigNumber(toAmount || 0)
+              .multipliedBy(swapGMTRate)
+              .toNumber();
+
+            this.fromAmount = amount ? accurateDecimal(amount, 6) : null;
+          } else {
+            const amount = new bigNumber(toAmount || 0)
+              .multipliedBy(swapTONRate)
+              .toNumber();
+
+            this.fromAmount = amount ? accurateDecimal(amount, 6) : null;
+          }
+        }
       }
     },
   },

@@ -424,6 +424,32 @@ export default defineComponent({
       this.getToAmount();
       this.getExchangePrice();
     },
+    recomputeNum(newV: number) {
+      if (newV > 1) {
+        useUserStore().setRecomputeNum(0);
+
+        const {
+          orderInfo: { amount },
+          coinName,
+          swapGMTRate,
+          swapTONRate,
+        } = this;
+
+        if (coinName == "GMT") {
+          const amountV = new bigNumber(amount || 0)
+            .multipliedBy(swapTONRate)
+            .toNumber();
+
+          this.toAmount = amount ? accurateDecimal(amountV, 6) : null;
+        } else {
+          const amountV = new bigNumber(amount || 0)
+            .multipliedBy(swapGMTRate)
+            .toNumber();
+
+          this.toAmount = amountV ? accurateDecimal(amountV, 6) : null;
+        }
+      }
+    },
   },
   beforeUnmount() {
     this.clearTimerFun();

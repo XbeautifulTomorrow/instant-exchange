@@ -34,6 +34,7 @@ export const useUserStore = defineStore("user", {
 
     gmtConvertUsd: null as number | any, // GMT转化至USD价格
     tonConvertUsd: null as number | any, // TON转化至USD价格
+    recomputeNum: 0 as number, // 重新计算计数
 
     retryCount: 5, // 登录重试次数
     loadLog: false,
@@ -74,6 +75,9 @@ export const useUserStore = defineStore("user", {
     setCurrentTime(data: any) {
       this.currentTime = data;
     },
+    setRecomputeNum(data: number) {
+      this.recomputeNum = data;
+    },
     async fetchCoinExchange(data: any) {
       const res = await getCoinExchange({
         source: data,
@@ -84,6 +88,8 @@ export const useUserStore = defineStore("user", {
         } else {
           this.tonConvertUsd = res.data;
         }
+
+        this.recomputeNum++;
       }
     },
     async logoutApi() {
