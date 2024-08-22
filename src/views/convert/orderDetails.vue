@@ -75,7 +75,7 @@
             </span>
           </div>
           <div class="convert_val">
-            {{ `$${Number(exchangeUsd).toLocaleString()}` }}
+            {{ `$${formatNumber(exchangeUsd || 0, 4)}` }}
           </div>
         </div>
         <div class="other_box">
@@ -242,7 +242,9 @@ export default defineComponent({
     },
     formatNumber(event: number | string, type: number) {
       const num = accurateDecimal(event, type);
-      return Number(num).toLocaleString();
+      return Number(num).toLocaleString(undefined, {
+        maximumFractionDigits: type,
+      });
     },
   },
   watch: {

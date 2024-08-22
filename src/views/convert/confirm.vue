@@ -440,7 +440,7 @@ export default defineComponent({
             .multipliedBy(swapTONRate)
             .toNumber();
 
-          this.toAmount = amount ? accurateDecimal(amountV, 6) : null;
+          this.toAmount = amountV ? accurateDecimal(amountV, 6) : null;
         } else {
           const amountV = new bigNumber(amount || 0)
             .multipliedBy(swapGMTRate)

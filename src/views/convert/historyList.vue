@@ -307,7 +307,9 @@ export default defineComponent({
     // 格式化数字
     formatNumber(event: number | string, type: number) {
       const num = accurateDecimal(event, type);
-      return Number(num).toLocaleString();
+      return Number(num).toLocaleString(undefined, {
+        maximumFractionDigits: type,
+      });
     },
   },
   watch: {

@@ -475,7 +475,6 @@ export default defineComponent({
       const num = accurateDecimal(event, type);
       return Number(num).toLocaleString(undefined, {
         maximumFractionDigits: type,
-        useGrouping: false,
       });
     },
   },
