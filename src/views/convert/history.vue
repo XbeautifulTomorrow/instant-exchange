@@ -31,16 +31,12 @@
           </div>
           <div class="history_item_info_right">
             <div v-if="item.status == 4" class="receive">
-              <span v-if="item.receiveCoin == 'GMT'">
-                {{
-                  `+${formatNumber(item.receiveAmount, 2)} ${item.receiveCoin}`
-                }}
-              </span>
-              <span v-else>
-                {{
-                  `+${formatNumber(item.receiveAmount, 6)} ${item.receiveCoin}`
-                }}
-              </span>
+              {{
+                `+${formatNumber(
+                  item.receiveAmount,
+                  item.receiveCoin == "GMT" ? 2 : 6
+                )} ${item.receiveCoin}`
+              }}
             </div>
             <div class="status fail" v-else-if="item.status == 5">
               <div>Fail</div>
@@ -63,12 +59,12 @@
             </div>
             <div class="status in_progress" v-else>In Progress</div>
             <div class="send">
-              <span v-if="item.sendCoin == 'GMT'">
-                {{ `-${formatNumber(item.sendAmount, 2)} ${item.sendCoin}` }}
-              </span>
-              <span v-else>
-                {{ `-${formatNumber(item.sendAmount, 6)} ${item.sendCoin}` }}
-              </span>
+              {{
+                `-${formatNumber(
+                  item.sendAmount,
+                  item.sendCoin == "GMT" ? 2 : 6
+                )} ${item.sendCoin}`
+              }}
             </div>
           </div>
         </div>

@@ -43,36 +43,20 @@
         </div>
         <div class="swap_amount">
           <div class="from_val">
-            <span v-if="history.sendCoin == 'GMT'">
-              {{
-                `-${formatNumber(history.sendAmount || 0, 2)} ${
-                  history.sendCoin
-                }`
-              }}
-            </span>
-            <span v-else>
-              {{
-                `-${formatNumber(history.sendAmount || 0, 6)} ${
-                  history.sendCoin
-                }`
-              }}
-            </span>
+            {{
+              `-${formatNumber(
+                history.sendAmount || 0,
+                history.sendCoin == "GMT" ? 2 : 6
+              )} ${history.sendCoin}`
+            }}
           </div>
           <div class="to_val">
-            <span v-if="history.receiveCoin == 'GMT'">
-              {{
-                `+${formatNumber(history.actualReceiveAmount || 0, 2)} ${
-                  history.receiveCoin
-                }`
-              }}
-            </span>
-            <span v-else>
-              {{
-                `+${formatNumber(history.actualReceiveAmount || 0, 6)} ${
-                  history.receiveCoin
-                }`
-              }}
-            </span>
+            {{
+              `+${formatNumber(
+                history.actualReceiveAmount || 0,
+                history.receiveCoin == "GMT" ? 2 : 6
+              )} ${history.receiveCoin}`
+            }}
           </div>
           <div class="convert_val">
             {{ `$${formatNumber(exchangeUsd || 0, 4)}` }}
@@ -93,7 +77,10 @@
             <div class="title">Service Fee</div>
             <div class="val">
               {{
-                `${formatNumber(history.fee || 0, 2)} ${history.receiveCoin}`
+                `${formatNumber(
+                  history.fee || 0,
+                  history.receiveCoin == "GMT" ? 2 : 6
+                )} ${history.receiveCoin}`
               }}
             </div>
           </div>
