@@ -187,8 +187,7 @@ type coin = "GMT" | "TON";
 export default defineComponent({
   data() {
     return {
-      gmtJettons:
-        "0:93d1b05e7214a22569548f1addae3facde413d9c38101706542fa5ad5dac446d",
+      gmtJettons: "",
       coinBalance: null as number | any, // 币种余额
 
       coinName: "GMT" as coin,
@@ -199,6 +198,14 @@ export default defineComponent({
     };
   },
   async created() {
+    this.gmtJettons =
+      "0:93d1b05e7214a22569548f1addae3facde413d9c38101706542fa5ad5dac446d"; // 测试币(NEOJ)
+
+    if (import.meta.env.MODE == "prod") {
+      this.gmtJettons =
+        "0:46383cd27e42443a0f40ec744fe290141fb9ab4cc6ffe8c533eea5cd2d557653"; // 正式币(GMT)
+    }
+
     this.getExchangePrice();
   },
   components: {
@@ -342,14 +349,14 @@ export default defineComponent({
     },
     // 初始化ton-connect
     async initTonConnect() {
-      let miniappUrl = "https://t.me/test1gscbot/test1gsc";
+      let miniappUrl = "https://t.me/gm_coin_test_bot/instantExchange";
 
       this.tonConnect = new TonConnectUI({
-        manifestUrl: "https://tonrollercoaster.com/tonconnect-manifest.json",
+        manifestUrl: "https://swap.gmking.io/tonconnect-manifest.json",
       });
 
       if (import.meta.env.MODE == "prod") {
-        miniappUrl = "https://t.me/theRollerCoasterBot/RollerCoaster";
+        miniappUrl = "https://t.me/theGMCoinBot/GMExchange";
       }
       // webapp重定向
       this.tonConnect.uiOptions = {

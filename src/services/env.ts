@@ -6,7 +6,7 @@ const config = {
     api: "https://test2.xlab.red:6501/",
   },
   prod: {
-    api: "https://api.tonrollercoaster.com/",
+    api: "/",
   },
 };
 
