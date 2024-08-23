@@ -12,7 +12,12 @@
         </div>
         <div class="history_title">History</div>
         <transition-group name="list" tag="ul">
-          <li class="list_item" v-for="item in historyData" :key="item.timeDay">
+          <li
+            class="list_item"
+            v-for="item in historyData"
+            :key="item.timeDay"
+            v-if="historyData.length > 0"
+          >
             <div class="history_time">
               {{
                 item.timeDay == currentDay ? "Today" : formatTime(item.timeDay)
@@ -87,6 +92,11 @@
                 {{ timeForStr(event.createTime, "HH:mm:ss") }}
               </div>
             </div>
+          </li>
+          <li v-else class="no_data">
+            <v-img :width="52" cover src="@/assets/images/no_data.svg"></v-img>
+            <div class="no_data_text">NO DATA</div>
+            <div class="refresh_btn" @click="fetchHistoryList()">Refresh</div>
           </li>
         </transition-group>
         <orderDetails :historyId="historyId"></orderDetails>
@@ -488,5 +498,37 @@ li {
   text-align: right;
   font-size: 16px;
   color: rgba(0, 0, 0, 0.4);
+}
+
+.no_data {
+  width: 100%;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+
+  .v-img {
+    flex: none;
+  }
+
+  .no_data_text {
+    margin: 16px 0;
+    color: #666565;
+  }
+
+  .refresh_btn {
+    padding: 8px 16px;
+    background-color: #ececec;
+    font-weight: 700;
+    line-height: 1;
+    font-style: normal;
+    color: #666565;
+    border-radius: 8px;
+    cursor: pointer;
+  }
 }
 </style>
