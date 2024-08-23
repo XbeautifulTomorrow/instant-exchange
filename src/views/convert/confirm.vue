@@ -271,13 +271,13 @@ export default defineComponent({
       if (coinName == "TON") {
         receiveFee = new bigNumber(toAmount).multipliedBy(0.003).toNumber();
         const usd = new bigNumber(1).dividedBy(gmtConvertUsd).toNumber();
-        const fixedFee = new bigNumber(usd).multipliedBy(0.2).toNumber();
+        const fixedFee = new bigNumber(usd).multipliedBy(0.5).toNumber();
         const fee = new bigNumber(receiveFee).plus(fixedFee).toNumber();
         return accurateDecimal(fee, 8);
       } else {
         receiveFee = new bigNumber(toAmount).multipliedBy(0.003).toNumber();
         const usd = new bigNumber(1).dividedBy(tonConvertUsd).toNumber();
-        const fixedFee = new bigNumber(usd).multipliedBy(0.2).toNumber();
+        const fixedFee = new bigNumber(usd).multipliedBy(0.5).toNumber();
         const fee = new bigNumber(receiveFee).plus(fixedFee).toNumber();
         return accurateDecimal(fee, 8);
       }

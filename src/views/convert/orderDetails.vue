@@ -225,7 +225,7 @@ export default defineComponent({
       return event.substring(0, 10);
     },
     handleOpenLink(event: string) {
-      const url = `https://tonscan.org/tx/by-msg-hash/`;
+      const url = `https://tonviewer.com/transaction/`;
       openUrl(url + event);
     },
     formatNumber(event: number | string, type: number) {
