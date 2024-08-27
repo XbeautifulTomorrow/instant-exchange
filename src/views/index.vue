@@ -203,7 +203,7 @@ export default defineComponent({
 
     if (import.meta.env.MODE == "prod") {
       this.gmtJettons =
-        "0:46383cd27e42443a0f40ec744fe290141fb9ab4cc6ffe8c533eea5cd2d557653"; // 正式币(GMT)
+        "0:e53bbbaf5a62cb28748e917b245b9e322574a42864721b0741b005b62b44a247"; // 正式币(GMT)
     }
 
     this.getExchangePrice();
